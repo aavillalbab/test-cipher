@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && node dist/index"
+    "encrypt": "tsc && node dist/index",
+    "decrypt": "tsc && node dist/decrypt"
   },
   "keywords": [],
-  "author": "",
+  "author": "@aavillalbab",
   "license": "ISC",
   "dependencies": {
     "crypto-js": "^4.1.1",
