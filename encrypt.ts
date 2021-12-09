@@ -27,11 +27,12 @@ function encryptData(data: Object, secretKey: string, ivKey: string) {
         }
     );
 
-    const finalString = encrypted.ciphertext.toString(enc.Base64);
+    const ciphertext = encrypted.ciphertext.toString(enc.Base64);
 
-    const chars = Array.from(finalString);
+    // const chars = Array.from(finalString);
+    // return replaceString(chars);
 
-    return replaceString(chars);
+    return replaceSpecialCharacters(ciphertext);
 }
 
 function replaceString(chars: string[]) {
@@ -54,6 +55,11 @@ function replaceString(chars: string[]) {
 
     return chars.join('');
 }
+
+const replaceSpecialCharacters = (ciphertext: string) => ciphertext.replace(
+    /[!*'();:@&=+$,\/?#\[\]<>]/g,
+    (match: string) => `-${match.charCodeAt(0)}-`
+);
 
 const host = `${domain}/pagos/solicita`;
 
