@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "encrypt": "tsc && node dist/index",
+    "encrypt": "tsc && node dist/encrypt",
     "decrypt": "tsc && node dist/decrypt"
   },
   "keywords": [],
