@@ -5,12 +5,17 @@ dotenv.config();
 import { AES, enc, mode, pad } from "crypto-js";
 
 import transaction from './transaction';
+import dataSended from './dataSended';
 
-const domain = process.env.DOMAIN || '';
+const domain = process.env.DOMAIN;
 
-const secretKey = process.env.SECRET_KEY || '';
+const secretKey = process.env.SECRET_KEY!;
 
-const ivKey = process.env.IV_KEY || '';
+const ivKey = process.env.IV_KEY!;
+
+const isPaymentLink = process.env.PAYMENT_LINK! === 'true';
+
+const dataToEncrypt = isPaymentLink ? transaction : dataSended;
 
 function encryptData(data: Object, secretKey: string, ivKey: string) {
     const key = enc.Hex.parse(secretKey);
@@ -32,7 +37,9 @@ function encryptData(data: Object, secretKey: string, ivKey: string) {
     // const chars = Array.from(finalString);
     // return replaceString(chars);
 
-    return replaceSpecialCharacters(ciphertext);
+    if (isPaymentLink) return replaceSpecialCharacters(ciphertext);
+
+    return ciphertext;
 }
 
 function replaceString(chars: string[]) {
@@ -63,6 +70,7 @@ const replaceSpecialCharacters = (ciphertext: string) => ciphertext.replace(
 
 const host = `${domain}/pagos/solicita`;
 
-const _encryptData = encryptData(transaction, secretKey, ivKey);
+const _encryptData = encryptData(dataToEncrypt, secretKey, ivKey);
 
-console.info(`${host}?q=${_encryptData}`);
+if (isPaymentLink) console.info(`${host}?q=${_encryptData}`);
+else console.info(_encryptData);
