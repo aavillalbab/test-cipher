@@ -1,14 +1,17 @@
 import dotenv from 'dotenv';
+import dotenvExpand from "dotenv-expand";
 
-dotenv.config();
+const env = dotenv.config();
+
+dotenvExpand(env);
 
 import { AES, enc, mode, pad } from "crypto-js";
 
 import cipherText from './cipherText';
 
-const secretKey = process.env.SECRET_KEY || '';
+const secretKey = process.env.SECRET_KEY!;
 
-const ivKey = process.env.IV_KEY || '';
+const ivKey = process.env.IV_KEY!;
 
 function decryptData(cipherText: string, secretKey: string, ivKey: string) {
     const key = enc.Hex.parse(secretKey);

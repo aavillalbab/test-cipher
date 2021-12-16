@@ -1,13 +1,16 @@
 import dotenv from 'dotenv';
+import dotenvExpand from "dotenv-expand";
 
-dotenv.config();
+const env = dotenv.config();
+
+dotenvExpand(env);
 
 import { AES, enc, mode, pad } from "crypto-js";
 
 import transaction from './transaction';
 import dataSended from './dataSended';
 
-const domain = process.env.DOMAIN;
+const domain = process.env.DOMAIN!;
 
 const secretKey = process.env.SECRET_KEY!;
 
