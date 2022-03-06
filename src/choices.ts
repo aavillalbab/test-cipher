@@ -10,17 +10,23 @@ const choiceEncrypt = async (
 ) => {
   let showData: string;
 
-  if (portal && enviroment) {
+  if (portal) {
     let union: string;
-
-    if (portal!.split('.').length >= 2) union = '-';
-    else union = '.';
 
     const encryptedTransaction = encryptData(data, secretKey, ivKey, true);
 
-    const host = `https://${enviroment}-pagos${union}${portal}.com`;
+    const localPortal = portal!.split('#');
 
-    showData = `${host}/pagos/solicita?q=${encryptedTransaction}`;
+    if (localPortal.length === 2) {
+      showData = `http://localhost:${localPortal[1]}/pagos/solicita?q=${encryptedTransaction}`;
+    } else {
+      if (portal!.split('.').length >= 3) union = '-';
+      else union = '.';
+
+      const host = `https://${enviroment}-pagos${union}${portal}`;
+
+      showData = `${host}/pagos/solicita?q=${encryptedTransaction}`;
+    }
   } else {
     showData = encryptData(data, secretKey, ivKey, false);
   }

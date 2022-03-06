@@ -93,7 +93,11 @@ const main = async () => {
 
     if (choice === TX) {
       const portal = await selectPortal();
-      const enviroment = await selectEnvironment();
+      const localPortal = portal.name.split('#');
+
+      let enviroment: string = '';
+
+      if (localPortal.length === 1) enviroment = await selectEnvironment();
 
       choiceEncrypt(transaction, IV_KEY, portal.secretKey, portal.name, enviroment);
     }
