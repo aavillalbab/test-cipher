@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "encrypt": "tsc && node dist/encrypt",
-    "decrypt": "tsc && node dist/decrypt"
+    "start": "ts-node src/index",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "@aavillalbab",
@@ -13,11 +13,15 @@
   "dependencies": {
     "crypto-js": "^4.1.1",
     "dotenv": "^10.0.0",
-    "dotenv-expand": "^5.1.0"
+    "dotenv-expand": "^5.1.0",
+    "inquirer": "^8.2.0"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.0.2",
+    "@types/inquirer": "^8.2.0",
     "@types/node": "^16.11.11",
+    "prettier": "2.5.1",
+    "ts-node": "^10.7.0",
     "tslint": "^6.1.3",
     "typescript": "^4.5.2"
   }
