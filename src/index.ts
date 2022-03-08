@@ -13,20 +13,9 @@ import transaction from './data/transaction';
 import dataSended from './data/dataSended';
 import cipherText from './data/cipherText';
 
-const TX = 'TX', DATA = 'Data', ENCRYPT = 'Encrypt', DECRYPT = 'Decrypt';
-
-interface Portal {
-  name: string;
-  secretKey: string;
-}
-
 const SECRET_KEY = process.env.SECRET_KEY!;
 
 const IV_KEY = process.env.IV_KEY!;
-
-const PORTALS_NAMES = process.env.PORTALS_NAMES!
-  .split(',')
-  .map((name) => name.trim());
 
 const ENVIRONMENTS = process.env.ENVIRONMENTS!
   .split(',')
@@ -34,22 +23,29 @@ const ENVIRONMENTS = process.env.ENVIRONMENTS!
 
 const PORTALS = process.env.PORTALS!.split(',');
 
-const portals: Portal[] = PORTALS.map((portal) => {
-  const keyValue = portal.split(':');
-  
-  return { name: keyValue[0].trim(), secretKey: keyValue[1].trim() };
-});
+const portalsNames = PORTALS
+  .map((portal) => ((portal.split('|')[0]).split(':')[1]).trim());
+
+const portalsDomainsAndKeys = PORTALS
+  .map((portal) => ((portal.split('|')[1])).trim())
+  .map((portal) => {
+    const keyValue = portal.split(':');
+
+    return { name: keyValue[0], secretKey: keyValue[1] };
+  });
+
+const TX = 'TX', DATA = 'Data', ENCRYPT = 'Encrypt', DECRYPT = 'Decrypt';
 
 const selectPortal = async () => {
   const selected = await prompt({
     type: 'list',
     name: 'portal',
     message: 'Select portal',
-    choices: PORTALS_NAMES
+    choices: portalsNames
   });
 
-  const index = PORTALS_NAMES.indexOf(selected.portal);
-  const portalSelectd = portals[index];
+  const index = portalsNames.indexOf(selected.portal);
+  const portalSelectd = portalsDomainsAndKeys[index];
 
   return portalSelectd;
 };
