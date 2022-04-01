@@ -12,3 +12,5 @@ src/data/transaction.ts
 src/data/cipherText.ts
 
 src/data/dataSended.ts
+
+src/data/decrypted.json

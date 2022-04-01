@@ -1,3 +1,5 @@
+import { writeFileSync } from "fs";
+
 import { AES, enc, mode, pad } from 'crypto-js';
 
 const decryptData = (cipherText: string, secretKey: string, ivKey: string) => {
@@ -10,6 +12,8 @@ const decryptData = (cipherText: string, secretKey: string, ivKey: string) => {
     iv,
     padding: pad.NoPadding
   });
+
+  writeFileSync('./src/data/decrypted.json', decrypted.toString(enc.Utf8));
 
   return JSON.parse(decrypted.toString(enc.Utf8));
 };
