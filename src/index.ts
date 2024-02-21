@@ -1,40 +1,41 @@
 import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
-
-const env = dotenv.config();
-
-dotenvExpand(env);
-
 import { prompt } from 'inquirer';
 
 import { choiceDecrypt, choiceEncrypt } from './choices';
 
 import transaction from './data/transaction';
-import dataSended from './data/dataSended';
+import dataSent from './data/dataSent';
 import cipherText from './data/cipherText';
+
+const env = dotenv.config();
+
+dotenvExpand(env);
 
 const SECRET_KEY = process.env.SECRET_KEY!;
 
 const IV_KEY = process.env.IV_KEY!;
 
-const ENVIRONMENTS = process.env.ENVIRONMENTS!
-  .split(',')
+const ENVIRONMENTS = process.env
+  .ENVIRONMENTS!.split(',')
   .map((name) => name.trim());
 
 const PORTALS = process.env.PORTALS!.split(',');
 
-const portalsNames = PORTALS
-  .map((portal) => ((portal.split('|')[0]).split(':')[1]).trim());
+const portalsNames = PORTALS.map((portal) => portal.split('|')[0].trim());
 
-const portalsDomainsAndKeys = PORTALS
-  .map((portal) => ((portal.split('|')[1])).trim())
-  .map((portal) => {
-    const keyValue = portal.split(':');
+const portalsDomainsAndKeys = PORTALS.map((portal) =>
+  portal.split('|')[1].trim()
+).map((portal) => {
+  const keyValue = portal.split(':');
 
-    return { name: keyValue[0], secretKey: keyValue[1] };
-  });
+  return { name: keyValue[0], secretKey: keyValue[1] };
+});
 
-const TX = 'TX', DATA = 'Data', ENCRYPT = 'Encrypt', DECRYPT = 'Decrypt';
+const TX = 'TX',
+  DATA = 'Data',
+  ENCRYPT = 'Encrypt',
+  DECRYPT = 'Decrypt';
 
 const selectPortal = async () => {
   const selected = await prompt({
@@ -45,20 +46,19 @@ const selectPortal = async () => {
   });
 
   const index = portalsNames.indexOf(selected.portal);
-  const portalSelectd = portalsDomainsAndKeys[index];
 
-  return portalSelectd;
+  return portalsDomainsAndKeys[index];
 };
 
 const selectEnvironment = async () => {
   const selected = await prompt({
     type: 'list',
-    name: 'enviroment',
-    message: 'Select enviroment',
+    name: 'environment',
+    message: 'Select environment',
     choices: ENVIRONMENTS
   });
 
-  return selected.enviroment as string;
+  return selected.environment as string;
 };
 
 const selectTXOrData = async (encrypt: boolean) => {
@@ -84,31 +84,37 @@ const main = async () => {
 
   if (response.choice === ENCRYPT) {
     if (choice === DATA) {
-      choiceEncrypt(dataSended, IV_KEY, SECRET_KEY);
+      await choiceEncrypt(dataSent, IV_KEY, SECRET_KEY);
     }
 
     if (choice === TX) {
       const portal = await selectPortal();
       const localPortal = portal.name.split('#');
 
-      let enviroment: string = '';
+      let environment: string = '';
 
-      if (localPortal.length === 1) enviroment = await selectEnvironment();
+      if (localPortal.length === 1) environment = await selectEnvironment();
 
-      choiceEncrypt(transaction, IV_KEY, portal.secretKey, portal.name, enviroment);
+      await choiceEncrypt(
+        transaction,
+        IV_KEY,
+        portal.secretKey,
+        portal.name,
+        environment
+      );
     }
   }
 
   if (response.choice === DECRYPT) {
     if (choice === DATA) {
-      choiceDecrypt(cipherText, IV_KEY, SECRET_KEY);
+      await choiceDecrypt(cipherText, IV_KEY, SECRET_KEY);
     }
 
     if (choice === TX) {
       const portal = await selectPortal();
-      choiceDecrypt(cipherText, IV_KEY, portal.secretKey);
+      await choiceDecrypt(cipherText, IV_KEY, portal.secretKey);
     }
   }
 };
 
-main();
+main().catch(console.error)
