@@ -23,7 +23,10 @@ const choiceEncrypt = async (
       if (portal!.split('.').length >= 3) union = '-';
       else union = '.';
 
-      const host = `https://${enviroment}-pagos${union}${portal}`;
+      const host =
+        portal !== 'pagosalud.bolivarconmigo.com'
+          ? `https://${enviroment}-pagos${union}${portal}`
+          : `https://${enviroment}${union}${portal}`;
 
       showData = `${host}/pagos/solicita?q=${encryptedTransaction}`;
     }

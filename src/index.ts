@@ -29,7 +29,7 @@ const portalsDomainsAndKeys = PORTALS.map((portal) =>
 ).map((portal) => {
   const keyValue = portal.split(':');
 
-  return { name: keyValue[0], secretKey: keyValue[1] };
+  return { name: keyValue[0], secretKey: keyValue[1].trim() };
 });
 
 const TX = 'TX',
